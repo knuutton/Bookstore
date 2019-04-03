@@ -24,9 +24,7 @@
 			<label for="price">Price</label>
 			<input type="text" id="price" th:field="*{price}" />
 			<div style="clear: both; display: block; height: 10px;"></div>
-			
 			<label for="category">Category</label>
-			
 			 <select id="category" th:field="*{category}" class="form-control">
        			<option th:each="category: ${category}" th:value="${category.id}" th:text="${category.name}"></option>
     		</select>
