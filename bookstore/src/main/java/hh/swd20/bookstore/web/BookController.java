@@ -1,10 +1,11 @@
 package hh.swd20.bookstore.web;
 
-
 import java.util.List;
 import java.util.Optional;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,12 +19,17 @@ import hh.swd20.bookstore.domain.CategoryRepository;
 
 @Controller
 public class BookController {
-	
+
 	@Autowired
 	private BookstoreRepository repository;
-	
+
 	@Autowired
 	private CategoryRepository catrepository;
+	
+	@GetMapping("/login")
+	public String login() {
+		return "login";
+	}
 	
 	@GetMapping("/booklist")
 	public String booklist(Model model) {
@@ -32,9 +38,19 @@ public class BookController {
 	}
 	
 	@GetMapping("/books")
-	public @ResponseBody List<Book> getBooksRest(){
+	public @ResponseBody List<Book> getBooksRest() {
 		return (List<Book>) repository.findAll();
 	}
+	
+	@GetMapping("/book/{id}")
+	public @ResponseBody Optional<Book> getBookRest(@PathVariable("id") Long id) {
+		return repository.findById(id);
+	}
+	
+	@GetMapping("/")
+	public String homeSecure() {
+		return "booklist";
+	}  
 	
 	@GetMapping("/add")
 	public String addBook(Model model) {
@@ -42,30 +58,25 @@ public class BookController {
 		model.addAttribute("category", catrepository.findAll());
 		return "addbook";
 	}
-	
-	@GetMapping("/book/{id}")
-	public @ResponseBody Optional<Book> getBookRest(@PathVariable("id") Long id){
-		return repository.findById(id);
-	}
-	
+
 	@PostMapping("/save")
 	public String save(Book book) {
 		repository.save(book);
 		return "redirect:booklist";
 	}
-	
+
 	@GetMapping("/delete/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public String deleteBook(@PathVariable("id") Long id, Model model) {
 		repository.deleteById(id);
 		return "redirect:../booklist";
 	}
-	
+
 	@GetMapping("/edit/{id}")
 	public String editBook(@PathVariable("id") Long id, Model model) {
 		model.addAttribute("book", repository.findById(id));
 		model.addAttribute("category", catrepository.findAll());
 		return "editbook";
 	}
-	
-	
+
 }
