@@ -18,6 +18,9 @@ public class User {
 
 	@Column(name = "password", nullable = false)
 	private String passwordHash;
+	
+	@Column
+	private String email;
 
 	@Column(name = "role", nullable = false)
 	private String role;
@@ -64,10 +67,21 @@ public class User {
 		this.role = role;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", passwordHash=" + passwordHash + ", role=" + role + "]";
+		return "User [id=" + id + ", username=" + username + ", passwordHash=" + passwordHash + ", email=" + email
+				+ ", role=" + role + "]";
 	}
+
+	
 
 	
 }
